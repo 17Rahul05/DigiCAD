@@ -1,52 +1,6 @@
-Medium-Priority Improvements
-
-
-0. Allow Configurable Gate Inputs:
-    * Problem: All gates have a fixed number of inputs
-      (e.g., 2-input AND). Users often need gates with 3,
-      4, or more inputs.
-    * Suggestion:
-        * Add a property to LogicGate for numberOfInputs.
-        * When a component is selected, show a small
-          configuration panel or a right-click context
-          menu that allows the user to change this
-          property.
-        * The gate's drawing and logic in updateState
-          would then need to adapt to the variable number
-          of inputs.
-
-
-  2. Orthogonal Wire Routing
-  Right now, wires are direct lines. Most professional simulators
-  (like Logisim) use orthogonal routing (wires only move in
-  90-degree angles).
-   * Why: This involves interesting algorithms (like A* search or
-     basic Manhattan geometry) to find paths that avoid overlapping
-     components.
-
-
-  3. Sequential Logic & Clocks
-  Currently, the simulation is combinational (inputs change, outputs
-  update). Adding a Clock component and Flip-Flops (D, JK)
-  introduces "Time" and "State."
-   * Why: This tests your ability to handle asynchronous events and
-     edge-triggered logic, which is significantly more complex than
-     simple gate propagation.
-
-
-  4. Spatial Indexing (Performance)
-  If a user places 5,000 gates, looping through every component to
-  see which one was clicked (O(N)) becomes slow. Implementing a
-  QuadTree for spatial lookups reduces this to O(log N).
-   * Why: Demonstrates that you think about scalability and
-     algorithmic efficiency.
-
-
-  5. Unit Testing for Logic Gates
-  Create a test suite that programmatically builds circuits (e.g., a
-  Full Adder) and asserts that the truth tables are 100% correct.   
-   * Why: In interviews, "How do you test this?" is a mandatory     
-     question. Having automated tests for your logic engine shows   
-     maturity.
-
-  ---
+1. Sub-Circuits: Fully implement the abstraction and library feature.
+2. Configurable Gates: Allow changing the number of inputs for logic gates.
+3. Keyboard Shortcuts: Add Swing Key Bindings for common actions.
+4. Orthogonal Wiring: Implement 90-degree wire routing (Manhattan routing).
+5. Pin-to-Grid Alignment: Standardize component sizes and pin offsets so pins always land on grid intersections.
+6. Text Labels: Allow users to annotate their circuits.

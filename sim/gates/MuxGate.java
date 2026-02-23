@@ -25,8 +25,8 @@ public class MuxGate extends LogicGate {
     private static final int TRAP_BOT = BODY_HEIGHT * 8 / 10;
     
     // Pin positions
-    private static final int PIN_Y_INPUT_A = 15;
-    private static final int PIN_Y_INPUT_B = 65;
+    private static final int PIN_Y_INPUT_A = 20;
+    private static final int PIN_Y_INPUT_B = 60;
     private static final int PIN_X_SELECT = BODY_WIDTH / 2;
     private static final int PIN_Y_SELECT = BODY_HEIGHT * 9 / 10;
     private static final int PIN_Y_OUTPUT = BODY_HEIGHT / 2;

@@ -191,8 +191,8 @@ public class Simulate extends JFrame {
 
     public void setSnapToGrid(boolean snap) {
         this.snapToGrid = snap;
-        mc.setSnapToGrid(snap, GRID_SIZE);
-        canvas.setGridVisible(snap, GRID_SIZE);
+        mc.setSnapToGrid(snap, 10); // Snap at 10px
+        canvas.setGridVisible(snap, GRID_SIZE); // Keep 20px visual grid
         canvas.repaint();
     }
 

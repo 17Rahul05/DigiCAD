@@ -28,8 +28,8 @@ public class DemuxGate extends LogicGate {
     private static final int PIN_Y_INPUT = BODY_HEIGHT / 2;
     private static final int PIN_X_SELECT = BODY_WIDTH / 2;
     private static final int PIN_Y_SELECT = BODY_HEIGHT * 9 / 10;
-    private static final int PIN_Y_OUTPUT_0 = 15;
-    private static final int PIN_Y_OUTPUT_1 = 65;
+    private static final int PIN_Y_OUTPUT_0 = 20;
+    private static final int PIN_Y_OUTPUT_1 = 60;
 
 
     public DemuxGate(String id, int x, int y) {

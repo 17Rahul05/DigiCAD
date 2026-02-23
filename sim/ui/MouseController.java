@@ -54,7 +54,7 @@ public class MouseController extends MouseAdapter {
 
     // Grid Snapping
     private boolean snapToGrid = false;
-    private int gridSize = 20;
+    private int gridSize = 10;
 
     // ==================================================================================
     // CONSTRUCTOR

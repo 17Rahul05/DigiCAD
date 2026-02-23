@@ -56,5 +56,6 @@ java -jar CircuitSimulator.jar
 1.  **Sub-Circuits:** Fully implement the abstraction and library feature.
 2.  **Configurable Gates:** Allow changing the number of inputs for logic gates.
 3.  **Keyboard Shortcuts:** Add Swing Key Bindings for common actions.
-4.  **Snapping Grid:** Improve component placement precision.
-5.  **Text Labels:** Allow users to annotate their circuits.
+4.  **Orthogonal Wiring:** Implement 90-degree wire routing (Manhattan routing).
+5.  **Pin-to-Grid Alignment:** Standardize component sizes and pin offsets so pins always land on grid intersections.
+6.  **Text Labels:** Allow users to annotate their circuits.

@@ -28,8 +28,8 @@ public class AndGate extends LogicGate {
     private static final double ARC_DIAMETER = (4.0 / 3.0) * BODY_WIDTH;
     
     // Pin positions
-    private static final int PIN_Y_INPUT_1 = 12;
-    private static final int PIN_Y_INPUT_2 = 48;
+    private static final int PIN_Y_INPUT_1 = 10;
+    private static final int PIN_Y_INPUT_2 = 50;
     private static final int PIN_Y_OUTPUT = BODY_HEIGHT / 2;
 
 

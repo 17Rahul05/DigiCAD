@@ -19,8 +19,8 @@ import sim.util.ThemeManager;
 public class Switch extends SinkSource implements Clickable {
 
     // --- CONSTANTS ---
-    protected static final int WIDTH = 30;
-    protected static final int HEIGHT = 30;
+    protected static final int WIDTH = 40;
+    protected static final int HEIGHT = 40;
 
     private static final int CORNER_ARC = 10;
     private static final int HANDLE_PADDING = 2;

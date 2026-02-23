@@ -28,9 +28,9 @@ public class NorGate extends LogicGate {
     private static final double CURVE_FRONT_RATIO = 0.6;
     
     // Pin positions
-    private static final int PIN_X_OFFSET = 7;
-    private static final int PIN_Y_INPUT_1 = 12;
-    private static final int PIN_Y_INPUT_2 = 48;
+    private static final int PIN_X_OFFSET = 6;
+    private static final int PIN_Y_INPUT_1 = 10;
+    private static final int PIN_Y_INPUT_2 = 50;
     private static final int PIN_Y_OUTPUT = BODY_HEIGHT / 2;
 
     public NorGate(String id, int x, int y) {
@@ -99,8 +99,8 @@ public class NorGate extends LogicGate {
 
         // Lines for PINs
         g2.setColor(theme.pinLine);
-        g2.drawLine(x - PIN_WIDTH + PIN_X_OFFSET, y + PIN_Y_INPUT_1, x + PIN_X_OFFSET, y + PIN_Y_INPUT_1);
-        g2.drawLine(x - PIN_WIDTH + PIN_X_OFFSET, y + PIN_Y_INPUT_2, x + PIN_X_OFFSET, y + PIN_Y_INPUT_2);
+        g2.drawLine(x, y + PIN_Y_INPUT_1, x + PIN_X_OFFSET, y + PIN_Y_INPUT_1);
+        g2.drawLine(x, y + PIN_Y_INPUT_2, x + PIN_X_OFFSET, y + PIN_Y_INPUT_2);
         g2.drawLine(x + TOTAL_WIDTH, midY, x + TOTAL_WIDTH + PIN_WIDTH, midY);
     }
 
@@ -109,8 +109,8 @@ public class NorGate extends LogicGate {
         Map<Integer, Point> coords = new HashMap<>();
 
         if (inputPinIDs.size() >= 2) {
-            coords.put(inputPinIDs.get(0), new Point(x - PIN_WIDTH + PIN_X_OFFSET, y + PIN_Y_INPUT_1));
-            coords.put(inputPinIDs.get(1), new Point(x - PIN_WIDTH + PIN_X_OFFSET, y + PIN_Y_INPUT_2));
+            coords.put(inputPinIDs.get(0), new Point(x, y + PIN_Y_INPUT_1));
+            coords.put(inputPinIDs.get(1), new Point(x, y + PIN_Y_INPUT_2));
         }
         if (!outputPinIDs.isEmpty()) {
             coords.put(outputPinIDs.get(0), new Point(x + TOTAL_WIDTH + PIN_WIDTH, y + PIN_Y_OUTPUT));

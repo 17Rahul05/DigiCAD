@@ -27,14 +27,14 @@ public class Encoder extends LogicGate {
     private static final int TRAP_BOT = BODY_HEIGHT * 8 / 10;
     
     // Pin positions
-    private static final int INPUT_0 = 5;
-    private static final int INPUT_1 = 35;
-    private static final int INPUT_2 = 65;
-    private static final int INPUT_3 = 95;
+    private static final int INPUT_0 = 20;
+    private static final int INPUT_1 = 40;
+    private static final int INPUT_2 = 60;
+    private static final int INPUT_3 = 80;
 
-    private static final int OUTPUT_0 = BODY_HEIGHT / 2 - 24;
-    private static final int OUTPUT_1 = BODY_HEIGHT / 2;
-    private static final int OUTPUT_V = BODY_HEIGHT / 2 + 24; // For Validation that at least one input is on
+    private static final int OUTPUT_0 = 30;
+    private static final int OUTPUT_1 = 50;
+    private static final int OUTPUT_V = 70; // For Validation that at least one input is on
 
     public Encoder(String id, int x, int y) {
         super(id, x, y, BODY_WIDTH, BODY_HEIGHT, "ENCODER");

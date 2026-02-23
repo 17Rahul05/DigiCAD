@@ -13,8 +13,8 @@ public abstract class LogicGate extends CircuitComponent {
     
     protected static final int PIN_WIDTH = 10;
 
-    protected static final int IN1 = 15; // Default, can be overridden
-    protected static final int IN2 = 45; // Default, can be overridden
+    protected static final int IN1 = 10; // Aligned to 10px snap grid
+    protected static final int IN2 = 50; // Aligned to 10px snap grid
 
     protected String label;
     protected PinState[] outputState;

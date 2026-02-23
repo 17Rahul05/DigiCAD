@@ -26,12 +26,12 @@ public class Decoder extends LogicGate{
     private static final int TRAP_BOT = BODY_HEIGHT * 8 / 10;
     
     // Pin positions
-    private static final int INPUT_A = 35;
-    private static final int INPUT_B = 65;
-    private static final int OUTPUT_0 = 5;
-    private static final int OUTPUT_1 = 35;
-    private static final int OUTPUT_2 = 65;
-    private static final int OUTPUT_3 = 95;
+    private static final int INPUT_A = 30;
+    private static final int INPUT_B = 70;
+    private static final int OUTPUT_0 = 20;
+    private static final int OUTPUT_1 = 40;
+    private static final int OUTPUT_2 = 60;
+    private static final int OUTPUT_3 = 80;
 
     public Decoder(String id, int x, int y) {
         super(id, x, y, BODY_WIDTH, BODY_HEIGHT, "DECODER");
