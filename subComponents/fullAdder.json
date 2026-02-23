@@ -1,0 +1,12 @@
+{
+  "inputMapping": {"21":1,"22":2,"23":3},
+  "inPins": [21, 22, 23],
+  "x": 319,
+  "width": 120,
+  "y": 289,
+  "id": "fullAdder",
+  "outputMapping": {"24":19,"25":20},
+  "internalCircuit": {"wires":[{"src":1,"dest":4}, {"src":2,"dest":5}, {"src":6,"dest":7}, {"src":3,"dest":8}, {"src":9,"dest":19}, {"src":1,"dest":13}, {"src":2,"dest":14}, {"src":6,"dest":10}, {"src":3,"dest":11}, {"src":15,"dest":17}, {"src":12,"dest":16}, {"src":18,"dest":20}],"components":[{"inPins":[],"x":100,"y":119,"id":"A","type":"SWITCH","outPins":[1]}, {"inPins":[],"x":101,"y":292,"id":"B","type":"SWITCH","outPins":[2]}, {"inPins":[],"x":105,"y":491,"id":"cin","type":"SWITCH","outPins":[3]}, {"inPins":[4, 5],"x":237,"y":148,"id":"XOR","type":"XOR","outPins":[6]}, {"inPins":[7, 8],"x":476,"y":200,"id":"XOR","type":"XOR","outPins":[9]}, {"inPins":[10, 11],"x":339,"y":396,"id":"AND","type":"AND","outPins":[12]}, {"inPins":[13, 14],"x":338,"y":476,"id":"AND","type":"AND","outPins":[15]}, {"inPins":[16, 17],"x":477,"y":409,"id":"OR","type":"OR","outPins":[18]}, {"inPins":[19],"x":627,"y":205,"id":"sum","type":"LED","outPins":[]}, {"inPins":[20],"x":623,"y":413,"id":"cout","type":"LED","outPins":[]}]},
+  "height": 75,
+  "outPins": [24, 25]
+}
