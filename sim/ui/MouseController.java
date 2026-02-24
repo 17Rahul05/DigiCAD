@@ -1,7 +1,13 @@
 package sim.ui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -10,11 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import javax.swing.BorderFactory;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import sim.CircuitComponent;
 import sim.CircuitManager;
+import sim.actions.ActionHandler;
 import sim.logic.AddComponentCommand;
 import sim.logic.AddWireCommand;
 import sim.logic.CommandManager;
@@ -26,6 +36,7 @@ import sim.model.Tooltype;
 import sim.model.Wire;
 import sim.util.Clickable;
 import sim.util.ComponentFactory;
+import sim.util.ThemeManager;
 
 public class MouseController extends MouseAdapter {
 
@@ -37,6 +48,7 @@ public class MouseController extends MouseAdapter {
     private final CanvasPanel canvas;
     private final Supplier<Tooltype> toolSupplier;
     private final CommandManager commandManager;
+    private ActionHandler actionHandler;
 
     // Interaction State
     private CircuitComponent selectedComponent = null; // For single-component drag
@@ -72,12 +84,21 @@ public class MouseController extends MouseAdapter {
         this.commandManager = commandManager;
     }
 
+    public void setActionHandler(ActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
+    }
+
     // ==================================================================================
     // MOUSE EVENTS
     // ==================================================================================
 
     @Override
     public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e)) {
+            handleContextMenu(e);
+            return;
+        }
+
         // Middle mouse button for panning
         if (SwingUtilities.isMiddleMouseButton(e)) {
             panStartPoint = e.getPoint();
@@ -88,7 +109,7 @@ public class MouseController extends MouseAdapter {
         Tooltype currtool = toolSupplier.get();
 
         // Double-click to rename - only in SELECT mode
-        if (currtool == Tooltype.SELECT && e.getClickCount() == 2) {
+        if (currtool == Tooltype.SELECT && e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
             handleRenaming(worldPos);
             return;
         }
@@ -113,6 +134,11 @@ public class MouseController extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         panStartPoint = null;
 
+        if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e)) {
+            handleContextMenu(e);
+            return;
+        }
+
         Point2D worldPos = canvas.screenToWorld(e.getPoint());
 
         if (toolSupplier.get() == Tooltype.WIRE && startPin != -1) {
@@ -122,7 +148,14 @@ public class MouseController extends MouseAdapter {
                 // We need to check if it's valid first
                 String warning = manager.validateWire(startPin, endPin);
                 if (warning == null) {
-                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(startPin, endPin)));
+                    int source = startPin;
+                    int dest = endPin;
+                    CircuitComponent srcComp = manager.getComponentByPin(startPin);
+                    if (srcComp != null && srcComp.getInputPinIDs().contains(startPin)) {
+                        source = endPin;
+                        dest = startPin;
+                    }
+                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(source, dest)));
                 } else {
                     canvas.showErrorMessage(warning);
                 }
@@ -168,6 +201,8 @@ public class MouseController extends MouseAdapter {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (SwingUtilities.isRightMouseButton(e)) return;
+
         // Handle Panning
         if (panStartPoint != null) {
             double dx = e.getX() - panStartPoint.x;
@@ -224,6 +259,82 @@ public class MouseController extends MouseAdapter {
     // ==================================================================================
     // HANDLERS
     // ==================================================================================
+
+    private void styleMenuItem(JMenuItem item) {
+        item.setBackground(ThemeManager.getTheme().bg);
+        item.setForeground(ThemeManager.getTheme().text);
+        item.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        item.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+    }
+
+    private void handleContextMenu(MouseEvent e) {
+        Point2D worldPos = canvas.screenToWorld(e.getPoint());
+        boolean clickedOnSelection = false;
+
+        // Check if clicked inside any currently selected component
+        for (CircuitComponent c : selectedComponents) {
+            if (c.contains((int) worldPos.getX(), (int) worldPos.getY())) {
+                clickedOnSelection = true;
+                break;
+            }
+        }
+
+        // If not clicked on a selection, check if clicked on an unselected component
+        if (!clickedOnSelection) {
+            selectedComponents.clear();
+            for (CircuitComponent c : manager.getComponents()) {
+                if (c.contains((int) worldPos.getX(), (int) worldPos.getY())) {
+                    selectedComponents.add(c);
+                    break;
+                }
+            }
+        }
+
+        if (!selectedComponents.isEmpty()) {
+            JPopupMenu menu = new JPopupMenu() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(ThemeManager.getTheme().bg);
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                    g2.setColor(ThemeManager.getTheme().componentBorder);
+                    g2.setStroke(new BasicStroke(1.5f));
+                    g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 10, 10);
+                    g2.dispose();
+                }
+            };
+            menu.setOpaque(false);
+            menu.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            menu.setBackground(new Color(0, 0, 0, 0));
+
+            JMenuItem subCircuitItem = new JMenuItem("Create Sub-Circuit");
+            styleMenuItem(subCircuitItem);
+            subCircuitItem.addActionListener(ev -> {
+                if (actionHandler != null) actionHandler.createSubComponent();
+            });
+            menu.add(subCircuitItem);
+
+            JMenuItem exportItem = new JMenuItem("Export Sub-Circuit");
+            styleMenuItem(exportItem);
+            exportItem.addActionListener(ev -> {
+                if (actionHandler != null) actionHandler.performExport();
+            });
+            menu.add(exportItem);
+
+            menu.addSeparator();
+
+            JMenuItem deleteItem = new JMenuItem("Delete");
+            styleMenuItem(deleteItem);
+            deleteItem.addActionListener(ev -> {
+                if (actionHandler != null) actionHandler.performDelete();
+            });
+            menu.add(deleteItem);
+
+            menu.show(canvas, e.getX(), e.getY());
+        }
+        canvas.repaint();
+    }
 
     private void handleRenaming(Point2D worldPos) {
         for (CircuitComponent c : manager.getComponents()) {

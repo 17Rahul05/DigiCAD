@@ -2,6 +2,8 @@ package sim.ui;
 
 import sim.model.Tooltype;
 import sim.util.ThemeManager;
+import sim.CircuitComponent;
+import sim.util.ComponentFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,9 +23,10 @@ public class ToolButton extends JButton {
     private boolean useThemeColor;
     private boolean isHovered = false; // Track hover state internally
     private int cornerRadius = 15;
+    private CircuitComponent dummyComponent;
 
     public ToolButton(String text, Color bg, boolean useThemeColor, Tooltype associatedTool, Supplier<Tooltype> currentToolSupplier, Consumer<Tooltype> toolSetter, String tooltipText) {
-        this(text, bg, useThemeColor, associatedTool, currentToolSupplier, toolSetter, tooltipText, 150, 40);
+        this(text, bg, useThemeColor, associatedTool, currentToolSupplier, toolSetter, tooltipText, 50, 50);
     }
 
     public ToolButton(String text, Color bg, boolean useThemeColor, Tooltype associatedTool, Supplier<Tooltype> currentToolSupplier, Consumer<Tooltype> toolSetter, String tooltipText, int width, int height) {
@@ -34,19 +37,21 @@ public class ToolButton extends JButton {
         this.defaultBg = bg;
         this.useThemeColor = useThemeColor;
         
+        if (associatedTool != null) {
+            dummyComponent = ComponentFactory.create(associatedTool, "", 0, 0); // Empty string instead of "dummy"
+        }
+
         setPreferredSize(new Dimension(width, height));
         setMaximumSize(new Dimension(width, height));
         setSize(width, height);
         setFocusPainted(false);
+        setFocusable(false);
         setContentAreaFilled(false);
         setOpaque(false);
         setToolTipText(tooltipText);
+        setMargin(new Insets(0, 0, 0, 0));
 
-        if (text.length() < 3 && !text.contentEquals("OR")) {
-            setFont(new Font("Segoe UI Symbol", Font.BOLD, height > 30 ? 18 : 14));
-        } else {
-            setFont(new Font("SansSerif", Font.BOLD, 14));
-        }
+        setFont(new Font("SansSerif", Font.BOLD, 12));
 
         // Add action listener to set the current tool
         if (associatedTool != null && toolSetter != null) {
@@ -141,5 +146,28 @@ public class ToolButton extends JButton {
 
         g2.dispose();
         super.paintComponent(g); // Paint children (text/icon)
+
+        if (dummyComponent != null) {
+            Graphics2D g3 = (Graphics2D) g.create();
+            g3.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            double maxW = getWidth() - 16;
+            double maxH = getHeight() - 16;
+            int cw = dummyComponent.getWidth();
+            int ch = dummyComponent.getHeight();
+            if (cw == 0) cw = 1;
+            if (ch == 0) ch = 1;
+
+            double scale = Math.min(maxW / cw, maxH / ch);
+            if (scale > 1.2) scale = 1.2;
+
+            double tx = (getWidth() - cw * scale) / 2.0;
+            double ty = (getHeight() - ch * scale) / 2.0;
+
+            g3.translate(tx, ty);
+            g3.scale(scale, scale);
+            dummyComponent.draw(g3);
+            g3.dispose();
+        }
     }
 }
