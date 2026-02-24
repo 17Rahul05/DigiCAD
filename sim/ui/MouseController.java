@@ -1,13 +1,7 @@
 package sim.ui;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -16,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import sim.CircuitComponent;
@@ -34,9 +25,9 @@ import sim.model.LED;
 import sim.model.Switch;
 import sim.model.Tooltype;
 import sim.model.Wire;
+import sim.ui.menu.ContextMenu;
 import sim.util.Clickable;
 import sim.util.ComponentFactory;
-import sim.util.ThemeManager;
 
 public class MouseController extends MouseAdapter {
 
@@ -260,13 +251,6 @@ public class MouseController extends MouseAdapter {
     // HANDLERS
     // ==================================================================================
 
-    private void styleMenuItem(JMenuItem item) {
-        item.setBackground(ThemeManager.getTheme().bg);
-        item.setForeground(ThemeManager.getTheme().text);
-        item.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        item.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-    }
-
     private void handleContextMenu(MouseEvent e) {
         Point2D worldPos = canvas.screenToWorld(e.getPoint());
         boolean clickedOnSelection = false;
@@ -290,50 +274,7 @@ public class MouseController extends MouseAdapter {
             }
         }
 
-        if (!selectedComponents.isEmpty()) {
-            JPopupMenu menu = new JPopupMenu() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(ThemeManager.getTheme().bg);
-                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-                    g2.setColor(ThemeManager.getTheme().componentBorder);
-                    g2.setStroke(new BasicStroke(1.5f));
-                    g2.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 10, 10);
-                    g2.dispose();
-                }
-            };
-            menu.setOpaque(false);
-            menu.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            menu.setBackground(new Color(0, 0, 0, 0));
-
-            JMenuItem subCircuitItem = new JMenuItem("Create Sub-Circuit");
-            styleMenuItem(subCircuitItem);
-            subCircuitItem.addActionListener(ev -> {
-                if (actionHandler != null) actionHandler.createSubComponent();
-            });
-            menu.add(subCircuitItem);
-
-            JMenuItem exportItem = new JMenuItem("Export Sub-Circuit");
-            styleMenuItem(exportItem);
-            exportItem.addActionListener(ev -> {
-                if (actionHandler != null) actionHandler.performExport();
-            });
-            menu.add(exportItem);
-
-            menu.addSeparator();
-
-            JMenuItem deleteItem = new JMenuItem("Delete");
-            styleMenuItem(deleteItem);
-            deleteItem.addActionListener(ev -> {
-                if (actionHandler != null) actionHandler.performDelete();
-            });
-            menu.add(deleteItem);
-
-            menu.show(canvas, e.getX(), e.getY());
-        }
-        canvas.repaint();
+        ContextMenu.show(canvas, e.getX(), e.getY(), selectedComponents, actionHandler);
     }
 
     private void handleRenaming(Point2D worldPos) {
