@@ -18,8 +18,8 @@ import sim.util.ThemeManager;
 public class LED extends SinkSource {
 
     // --- CONSTANTS ---
-    protected static final int WIDTH = 30;
-    protected static final int HEIGHT = 30;
+    protected static final int WIDTH = 40;
+    protected static final int HEIGHT = 40;
 
     private static final Color LED_COLOR_ON = Color.YELLOW;
     private static final Color GLOW_COLOR_OUTER = new Color(255, 200, 0, 50);

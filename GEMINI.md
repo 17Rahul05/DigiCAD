@@ -27,21 +27,31 @@ A desktop application built with Java Swing for designing and simulating digital
 ### Prerequisites
 *   Java Development Kit (JDK) 21 or higher.
 
-### Running from Source
-To compile and run the application from the root directory:
+### Automated Build (Recommended)
+You can use the provided build scripts to clean, compile, and package the project into a JAR.
 
+**PowerShell:**
 ```powershell
-# Compile all source files
-javac -d bin sim/*.java sim/gates/*.java sim/model/*.java sim/ui/*.java sim/util/*.java
-
-# Run the application
-java -cp bin sim.Simulate
+.\build.ps1
 ```
 
-### Running from JAR
-If the JAR file is already built:
+**Command Prompt (Batch):**
+```batch
+.\build.bat
+```
+
+### Manual Build
+To manually compile and run from the root directory:
+
 ```powershell
-java -jar CircuitSimulator.jar
+# Compile all source files recursively
+javac -d bin (Get-ChildItem -Path sim -Filter *.java -Recurse)
+
+# Package into JAR
+jar cvfm DigiCAD.jar manifest.txt -C bin .
+
+# Run the application
+java -jar DigiCAD.jar
 ```
 
 ## Development Conventions

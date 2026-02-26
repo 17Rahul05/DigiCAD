@@ -54,7 +54,7 @@ public class SimulatorToolbar {
         
         // --- Edit Tools ---
         addHeader("TOOLS");
-        JPanel editGrid = new JPanel(new GridLayout(0, 1, 0, 8));
+        JPanel editGrid = new JPanel(new GridLayout(0, 1, 0, 5));
         editGrid.setOpaque(false);
         editGrid.setAlignmentX(Component.LEFT_ALIGNMENT);
         addTextToolButton(editGrid, Tooltype.SELECT, "Select and move components", "Select");

@@ -106,6 +106,10 @@ public class CircuitManager {
     // ==================================================================================
 
     public String addWire(int sourceID, int destID) {
+        return addWire(sourceID, destID, false);
+    }
+
+    public String addWire(int sourceID, int destID, boolean orthogonal) {
         String validationError = validateWire(sourceID, destID);
         if (validationError != null) return validationError;
 
@@ -122,7 +126,7 @@ public class CircuitManager {
             inPin = sourceID;
         }
 
-        wires.add(new Wire(outPin, inPin));
+        wires.add(new Wire(outPin, inPin, orthogonal));
         propagate();
         return null;
     }
@@ -169,8 +173,18 @@ public class CircuitManager {
             Point p2 = globalPinMap.get(w.getDestPinID());
 
             if (p1 != null && p2 != null) {
-                double dist = distanceToSegment(x, y, p1.x, p1.y, p2.x, p2.y);
-                if (dist < 5.0) return w; 
+                double minDist;
+                if (w.isOrthogonal()) {
+                    int midX = (p1.x + p2.x) / 2;
+                    double dist1 = distanceToSegment(x, y, p1.x, p1.y, midX, p1.y);
+                    double dist2 = distanceToSegment(x, y, midX, p1.y, midX, p2.y);
+                    double dist3 = distanceToSegment(x, y, midX, p2.y, p2.x, p2.y);
+                    minDist = Math.min(dist1, Math.min(dist2, dist3));
+                } else {
+                    minDist = distanceToSegment(x, y, p1.x, p1.y, p2.x, p2.y);
+                }
+                
+                if (minDist < 5.0) return w; 
             }
         }
         return null;

@@ -31,16 +31,14 @@ public class Simulate extends JFrame {
 
     public Simulate() {
         setupWindow();
-        actionHandler = new ActionHandler(this, manager, canvas, mc, commandManager);
         setupCanvas();
-        mc.setActionHandler(actionHandler);
         setupMenuBar();
         setupToolbar();
         setupKeyBindings();
     }
 
     private void setupWindow() {
-        this.setTitle("Digital Circuit Simulator");
+        this.setTitle("DigiCAD");
         this.setSize(1000, 700);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
@@ -50,7 +48,6 @@ public class Simulate extends JFrame {
         canvas = new CanvasPanel(manager);
         canvas.setCommandManager(commandManager);
         mc = new MouseController(manager, canvas, this::getCurrentTool, commandManager);
-        // Ensure action handler has the correct mc reference
         actionHandler = new ActionHandler(this, manager, canvas, mc, commandManager);
         mc.setActionHandler(actionHandler);
         canvas.setController(mc);

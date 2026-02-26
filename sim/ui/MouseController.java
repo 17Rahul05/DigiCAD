@@ -146,7 +146,7 @@ public class MouseController extends MouseAdapter {
                         source = endPin;
                         dest = startPin;
                     }
-                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(source, dest)));
+                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(source, dest, snapToGrid)));
                 } else {
                     canvas.showErrorMessage(warning);
                 }
@@ -387,6 +387,10 @@ public class MouseController extends MouseAdapter {
     public void setSnapToGrid(boolean snap, int size) {
         this.snapToGrid = snap;
         this.gridSize = size;
+    }
+
+    public boolean isSnapToGrid() {
+        return snapToGrid;
     }
 
     // ==================================================================================

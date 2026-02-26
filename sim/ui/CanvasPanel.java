@@ -12,6 +12,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Path2D;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
@@ -236,7 +237,18 @@ public class CanvasPanel extends JPanel {
                 g2.setColor(ThemeManager.getTheme().text);
                 float[] dash = {9.0f};
                 g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash, 0));
-                g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+                
+                if (mc.isSnapToGrid()) {
+                    Path2D path = new Path2D.Double();
+                    int midX = (p1.x + p2.x) / 2;
+                    path.moveTo(p1.x, p1.y);
+                    path.lineTo(midX, p1.y);
+                    path.lineTo(midX, p2.y);
+                    path.lineTo(p2.x, p2.y);
+                    g2.draw(path);
+                } else {
+                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+                }
             }
         }
         // Reset stroke to default
