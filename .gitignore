@@ -35,3 +35,7 @@ dist/
 .project
 .classpath
 .settings/
+
+# Documentation (as requested)
+*.md
+!README.md
