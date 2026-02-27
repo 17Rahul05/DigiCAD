@@ -71,7 +71,6 @@ public class CircuitPersistence {
             Map<String, Object> wMap = new HashMap<>();
             wMap.put("src", w.getSourcePinID());
             wMap.put("dest", w.getDestPinID());
-            wMap.put("ortho", w.isOrthogonal());
             wireList.add(wMap);
         }
         data.put("wires", wireList);
@@ -130,11 +129,7 @@ public class CircuitPersistence {
                 Map<String, Object> map = (Map<String, Object>) obj;
                 int src = ((Number) map.get("src")).intValue();
                 int dest = ((Number) map.get("dest")).intValue();
-                boolean ortho = false;
-                if (map.containsKey("ortho")) {
-                    ortho = (Boolean) map.get("ortho");
-                }
-                manager.addWireDirectly(new Wire(src, dest, ortho));
+                manager.addWireDirectly(new Wire(src, dest));
             }
         }
 

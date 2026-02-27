@@ -21,6 +21,7 @@ import sim.logic.AddWireCommand;
 import sim.logic.CommandManager;
 import sim.logic.MoveComponentCommand;
 import sim.logic.RemoveComponentCommand;
+import sim.logic.RemoveWireCommand;
 import sim.model.LED;
 import sim.model.Switch;
 import sim.model.Tooltype;
@@ -85,10 +86,6 @@ public class MouseController extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e)) {
-            handleContextMenu(e);
-            return;
-        }
 
         // Middle mouse button for panning
         if (SwingUtilities.isMiddleMouseButton(e)) {
@@ -111,12 +108,14 @@ public class MouseController extends MouseAdapter {
             oldWorldPoint = null;
         }
 
-        switch (currtool) {
-            case TOGGLE -> handleClickInteraction(worldPos);
-            case WIRE   -> getStartPin(worldPos);
-            case SELECT -> handleSelectionPress(worldPos, e.getPoint());
-            case DELETE -> handleDeletion(worldPos);
-            default     -> placeComponent(currtool, worldPos);
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            switch (currtool) {
+                case TOGGLE -> handleClickInteraction(worldPos);
+                case WIRE   -> getStartPin(worldPos);
+                case SELECT -> handleSelectionPress(worldPos, e.getPoint());
+                case DELETE -> handleDeletion(worldPos);
+                default     -> placeComponent(currtool, worldPos);
+            }
         }
         canvas.repaint();
     }
@@ -146,12 +145,14 @@ public class MouseController extends MouseAdapter {
                         source = endPin;
                         dest = startPin;
                     }
-                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(source, dest, snapToGrid)));
+                    commandManager.executeCommand(new AddWireCommand(manager, new Wire(source, dest)));
                 } else {
                     canvas.showErrorMessage(warning);
                 }
             }
-        } else if (selectionRect != null) {
+        } 
+        
+        else if (selectionRect != null) {
             // Finalize marquee selection
             selectedComponents.clear();
             for (CircuitComponent c : manager.getComponents()) {
@@ -161,14 +162,18 @@ public class MouseController extends MouseAdapter {
             }
             selectionRect = null;
             selectionRectStart = null;
-        } else if (selectedComponent != null) {
+        } 
+        
+        else if (selectedComponent != null) {
             // Finalize single component move
             if (manager.isSpaceOccupied(selectedComponent)) {
                 if (oldWorldPoint != null) {
                     canvas.showErrorMessage("Space Occupied!");
                     selectedComponent.setLocation((int) oldWorldPoint.x, (int) oldWorldPoint.y);
                 }
-            } else {
+            } 
+            
+            else {
                 // If it moved, record command
                 if (oldWorldPoint != null && (selectedComponent.getX() != (int)oldWorldPoint.x || selectedComponent.getY() != (int)oldWorldPoint.y)) {
                     List<MoveComponentCommand.MoveInfo> moves = new ArrayList<>();
@@ -177,7 +182,6 @@ public class MouseController extends MouseAdapter {
                 }
             }
             manager.refreshAllPinLocations();
-            // After moving, the single component becomes the whole selection
             selectedComponents.clear();
             selectedComponents.add(selectedComponent);
         }
@@ -255,15 +259,12 @@ public class MouseController extends MouseAdapter {
         Point2D worldPos = canvas.screenToWorld(e.getPoint());
         boolean clickedOnSelection = false;
 
-        // Check if clicked inside any currently selected component
-        for (CircuitComponent c : selectedComponents) {
-            if (c.contains((int) worldPos.getX(), (int) worldPos.getY())) {
-                clickedOnSelection = true;
-                break;
-            }
+        // Check if clicked after selecting multiple components -> Allow menu to appear when right clicked ANYWHERE
+        if (!selectedComponents.isEmpty() && selectedComponents.size() > 1) {
+            clickedOnSelection = true;
         }
 
-        // If not clicked on a selection, check if clicked on an unselected component
+        // If not, check if clicked on a component
         if (!clickedOnSelection) {
             selectedComponents.clear();
             for (CircuitComponent c : manager.getComponents()) {
@@ -292,6 +293,7 @@ public class MouseController extends MouseAdapter {
 
     private void handleSelectionPress(Point2D worldPos, Point screenPos) {
         selectedComponent = null;
+
         // First, check if we're clicking a component
         for (CircuitComponent c : manager.getComponents()) {
             if (c.contains((int) worldPos.getX(), (int) worldPos.getY())) {
@@ -304,6 +306,7 @@ public class MouseController extends MouseAdapter {
                 return; // Found a component, stop here
             }
         }
+
         // If we clicked empty space, clear selection and start marquee
         selectedComponents.clear();
         selectionRectStart = new Point((int)worldPos.getX(), (int)worldPos.getY());
@@ -321,7 +324,7 @@ public class MouseController extends MouseAdapter {
         // Otherwise, fall back to single-item deletion
         Wire targetWire = manager.getWireAt((int) worldPos.getX(), (int) worldPos.getY());
         if (targetWire != null) {
-            commandManager.executeCommand(new sim.logic.RemoveWireCommand(manager, targetWire));
+            commandManager.executeCommand(new RemoveWireCommand(manager, targetWire));
             return;
         }
         for (CircuitComponent c : manager.getComponents()) {

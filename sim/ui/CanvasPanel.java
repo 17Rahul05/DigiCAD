@@ -12,7 +12,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.geom.Path2D;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import sim.CircuitManager;
 import sim.logic.CommandManager;
 import sim.model.Wire;
 import sim.util.PinState;
+import sim.util.Theme;
 import sim.util.ThemeManager;
 
 public class CanvasPanel extends JPanel {
@@ -47,6 +47,9 @@ public class CanvasPanel extends JPanel {
     private boolean gridVisible = false;
     private int gridSize = 20;
 
+    // ~~~~~~~~~~ THEME ~~~~~~~~~~
+    private Theme theme = ThemeManager.getTheme();
+
     public CanvasPanel(CircuitManager manager) {
         this.manager = manager;        
         this.setLayout(null);
@@ -54,13 +57,16 @@ public class CanvasPanel extends JPanel {
         this.requestFocusInWindow();
 
         ThemeManager.addThemeListener(() -> {
-            setBackground(ThemeManager.getTheme().bg);
+            theme = ThemeManager.getTheme();
+            setBackground(theme.bg);
             if (resetButton != null) resetButton.refreshAppearance();
             if (undoButton != null) undoButton.refreshAppearance();
             if (redoButton != null) redoButton.refreshAppearance();
             repaint();
         });
-        setBackground(ThemeManager.getTheme().bg);
+
+        // Initial background set
+        setBackground(theme.bg);
 
         setupHUDButtons();
 
@@ -74,12 +80,12 @@ public class CanvasPanel extends JPanel {
     }
 
     private void setupHUDButtons() {
-        resetButton = new ToolButton("Reset", ThemeManager.getTheme().buttonBg, true, null, null, null, "Reset pan and zoom to default");
+        resetButton = new ToolButton("Reset", theme.buttonBg, true, null, null, null, "Reset pan and zoom to default");
         resetButton.setFocusable(false);
         resetButton.addActionListener(e -> resetView());
         this.add(resetButton);
 
-        undoButton = new ToolButton("⟲", ThemeManager.getTheme().buttonBg, true, null, null, null, "Undo last action (Ctrl+Z)", 40, 40);
+        undoButton = new ToolButton("⟲", theme.buttonBg, true, null, null, null, "Undo last action (Ctrl+Z)", 40, 40);
         undoButton.setFocusable(false);
         undoButton.setCornerRadius(5);
         undoButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 16));
@@ -91,7 +97,7 @@ public class CanvasPanel extends JPanel {
         });
         this.add(undoButton);
 
-        redoButton = new ToolButton("⟳", ThemeManager.getTheme().buttonBg, true, null, null, null, "Redo last action (Ctrl+Y)", 40, 40);
+        redoButton = new ToolButton("⟳", theme.buttonBg, true, null, null, null, "Redo last action (Ctrl+Y)", 40, 40);
         redoButton.setFocusable(false);
         redoButton.setCornerRadius(5);
         redoButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 16));
@@ -181,8 +187,9 @@ public class CanvasPanel extends JPanel {
         double endX = Math.ceil(bottomRight.getX() / gridSize) * gridSize;
         double endY = Math.ceil(bottomRight.getY() / gridSize) * gridSize;
 
-        Color bg = ThemeManager.getTheme().bg;
+        Color bg = theme.bg;
         // Calculate brightness to decide if we darken or lighten for the grid
+        // Standard way to caluclate LUMA (ITU-R BT.601)
         double brightness = (bg.getRed() * 0.299 + bg.getGreen() * 0.587 + bg.getBlue() * 0.114);
         
         Color gridColor;
@@ -234,21 +241,10 @@ public class CanvasPanel extends JPanel {
             Point p2 = mc.getWirePreviewEnd();
 
             if (p1 != null && p2 != null) {
-                g2.setColor(ThemeManager.getTheme().text);
+                g2.setColor(theme.text);
                 float[] dash = {9.0f};
                 g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash, 0));
-                
-                if (mc.isSnapToGrid()) {
-                    Path2D path = new Path2D.Double();
-                    int midX = (p1.x + p2.x) / 2;
-                    path.moveTo(p1.x, p1.y);
-                    path.lineTo(midX, p1.y);
-                    path.lineTo(midX, p2.y);
-                    path.lineTo(p2.x, p2.y);
-                    g2.draw(path);
-                } else {
-                    g2.drawLine(p1.x, p1.y, p2.x, p2.y);
-                }
+                g2.drawLine(p1.x, p1.y, p2.x, p2.y);
             }
         }
         // Reset stroke to default
@@ -258,7 +254,7 @@ public class CanvasPanel extends JPanel {
     private void drawHighlights(Graphics2D g2) {
         if (mc != null) {
             List<CircuitComponent> selected = mc.getSelectedComponents();
-            g2.setColor(ThemeManager.getTheme().selection);
+            g2.setColor(theme.selection);
             g2.setStroke(new BasicStroke(2));
             for (CircuitComponent c : selected) {
                 g2.drawRect(c.getX() - 5, c.getY() - 5, c.getWidth() + 10, c.getHeight() + 10);
@@ -277,7 +273,7 @@ public class CanvasPanel extends JPanel {
             Rectangle rect = mc.getSelectionRect();
             if (rect != null) {
                 // Use a slightly more transparent version for the fill
-                Color sel = ThemeManager.getTheme().selection;
+                Color sel = theme.selection;
                 g2.setColor(new Color(sel.getRed(), sel.getGreen(), sel.getBlue(), 30));
                 g2.fill(rect);
                 g2.setColor(sel);

@@ -15,11 +15,12 @@ import sim.util.ThemeManager;
 
 public class FlatScrollBarUI extends BasicScrollBarUI {
     
-    private final int THUMB_SIZE = 8;
+    private static final int THUMB_SIZE = 8;
     
     @Override
     protected void installComponents() {
         super.installComponents();
+
         // Listener to repaint when theme changes
         ThemeManager.addThemeListener(() -> {
             if (scrollbar != null) scrollbar.repaint();
@@ -28,7 +29,7 @@ public class FlatScrollBarUI extends BasicScrollBarUI {
 
     @Override 
     protected void configureScrollBarColors() {
-        // No-op, we use dynamic colors
+        // Nope, we use dynamic colors
     }
 
     @Override
@@ -46,6 +47,7 @@ public class FlatScrollBarUI extends BasicScrollBarUI {
         return createZeroButton();
     }
 
+    // A button with NULL Dimensions (purely for overriding)
     private JButton createZeroButton() {
         JButton btn = new JButton();
         btn.setPreferredSize(new Dimension(0, 0));

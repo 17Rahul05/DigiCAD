@@ -5,12 +5,21 @@ import sim.util.ThemeManager;
 import sim.CircuitComponent;
 import sim.util.ComponentFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 
 public class ToolButton extends JButton {
     private Tooltype associatedTool;
@@ -38,7 +47,7 @@ public class ToolButton extends JButton {
         this.useThemeColor = useThemeColor;
         
         if (associatedTool != null) {
-            dummyComponent = ComponentFactory.create(associatedTool, "", 0, 0); // Empty string instead of "dummy"
+            dummyComponent = ComponentFactory.create(associatedTool, "", 0, 0);
         }
 
         setPreferredSize(new Dimension(width, height));
@@ -50,7 +59,6 @@ public class ToolButton extends JButton {
         setOpaque(false);
         setToolTipText(tooltipText);
         setMargin(new Insets(0, 0, 0, 0));
-
         setFont(new Font("SansSerif", Font.BOLD, 12));
 
         // Add action listener to set the current tool
