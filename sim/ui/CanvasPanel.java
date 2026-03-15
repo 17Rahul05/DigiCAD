@@ -30,7 +30,7 @@ public class CanvasPanel extends JPanel {
     private CircuitManager manager;
     private CommandManager commandManager;
     private MouseController mc;
-    
+
     // ~~~~~~~~~~ TRANSFORMATIONS ~~~~~~~~~~
     private double zoom = 1.0;
     private double panX = 0;
@@ -51,7 +51,7 @@ public class CanvasPanel extends JPanel {
     private Theme theme = ThemeManager.getTheme();
 
     public CanvasPanel(CircuitManager manager) {
-        this.manager = manager;        
+        this.manager = manager;
         this.setLayout(null);
         this.setFocusable(true);
         this.requestFocusInWindow();
@@ -59,9 +59,12 @@ public class CanvasPanel extends JPanel {
         ThemeManager.addThemeListener(() -> {
             theme = ThemeManager.getTheme();
             setBackground(theme.bg);
-            if (resetButton != null) resetButton.refreshAppearance();
-            if (undoButton != null) undoButton.refreshAppearance();
-            if (redoButton != null) redoButton.refreshAppearance();
+            if (resetButton != null)
+                resetButton.refreshAppearance();
+            if (undoButton != null)
+                undoButton.refreshAppearance();
+            if (redoButton != null)
+                redoButton.refreshAppearance();
             repaint();
         });
 
@@ -117,7 +120,7 @@ public class CanvasPanel extends JPanel {
         int resetHeight = 25;
         int iconSize = 40;
         int padding = 15;
-        
+
         resetButton.setBounds(getWidth() - resetWidth - padding, padding, resetWidth, resetHeight);
         undoButton.setBounds(padding, padding, iconSize, iconSize);
         redoButton.setBounds(padding + iconSize + 10, padding, iconSize, iconSize);
@@ -154,7 +157,7 @@ public class CanvasPanel extends JPanel {
         // Apply Pan and Zoom
         g2.translate(panX, panY);
         g2.scale(zoom, zoom);
-        
+
         // --- DRAW GRID FIRST ---
         if (gridVisible) {
             drawGrid(g2);
@@ -191,7 +194,7 @@ public class CanvasPanel extends JPanel {
         // Calculate brightness to decide if we darken or lighten for the grid
         // Standard way to caluclate LUMA (ITU-R BT.601)
         double brightness = (bg.getRed() * 0.299 + bg.getGreen() * 0.587 + bg.getBlue() * 0.114);
-        
+
         Color gridColor;
         if (brightness > 128) {
             // Light theme: use a darker grid
@@ -231,7 +234,8 @@ public class CanvasPanel extends JPanel {
                 }
             }
 
-            if (p1 != null && p2 != null) wire.draw(g2, p1.x, p1.y, p2.x, p2.y);
+            if (p1 != null && p2 != null)
+                wire.draw(g2, p1.x, p1.y, p2.x, p2.y);
         }
     }
 
@@ -242,7 +246,7 @@ public class CanvasPanel extends JPanel {
 
             if (p1 != null && p2 != null) {
                 g2.setColor(theme.text);
-                float[] dash = {9.0f};
+                float[] dash = { 9.0f };
                 g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, dash, 0));
                 g2.drawLine(p1.x, p1.y, p2.x, p2.y);
             }
@@ -318,12 +322,24 @@ public class CanvasPanel extends JPanel {
         }
     }
 
-    public void setZoom(double newZoom) { this.zoom = newZoom; }
-    public double getZoom() { return zoom; }
+    public void setZoom(double newZoom) {
+        this.zoom = newZoom;
+    }
+
+    public double getZoom() {
+        return zoom;
+    }
+
     public void setPan(double newPanX, double newPanY) {
         this.panX = newPanX;
         this.panY = newPanY;
     }
-    public double getPanX() { return panX; }
-    public double getPanY() { return panY; }
+
+    public double getPanX() {
+        return panX;
+    }
+
+    public double getPanY() {
+        return panY;
+    }
 }

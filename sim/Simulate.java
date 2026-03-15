@@ -25,7 +25,7 @@ public class Simulate extends JFrame {
     private MouseController mc;
     private SimulatorToolbar toolbar;
     private ActionHandler actionHandler;
-    
+
     private boolean snapToGrid = false;
     private static final int GRID_SIZE = 20;
 
@@ -65,28 +65,28 @@ public class Simulate extends JFrame {
 
     private void setupToolbar() {
         toolbar = new SimulatorToolbar(
-            this::getCurrentTool, 
-            this::setCurrentTool, 
-            this, 
-            manager, 
-            canvas
-        );
+                this::getCurrentTool,
+                this::setCurrentTool,
+                this,
+                manager,
+                canvas);
         this.add(toolbar.createToolbar(), BorderLayout.WEST);
     }
 
     private void setupKeyBindings() {
         KeyBindingManager.setupKeyBindings(
-            canvas, 
-            commandManager, 
-            actionHandler, 
-            mc, 
-            this::setCurrentTool, 
-            () -> setSnapToGrid(!snapToGrid)
-        );
+                canvas,
+                commandManager,
+                actionHandler,
+                mc,
+                this::setCurrentTool,
+                () -> setSnapToGrid(!snapToGrid));
     }
 
-    public Tooltype getCurrentTool() { return currentTool; }
-    
+    public Tooltype getCurrentTool() {
+        return currentTool;
+    }
+
     public void setCurrentTool(Tooltype tool) {
         this.currentTool = tool;
         if (toolbar != null) {
@@ -107,4 +107,3 @@ public class Simulate extends JFrame {
         });
     }
 }
-
